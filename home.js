@@ -826,11 +826,49 @@ function fetchUserProfilePicture(userId) {
 
 // Function to update the profile preview
 function updateProfilePreview() {
-    const bannerUrl = document.getElementById('banner-image-url').value;
-    const pfpUrl = document.getElementById('pfp-url').value;
-    const color1 = document.getElementById('gradient-color-1').value;
-    const color2 = document.getElementById('gradient-color-2').value;
-    const status = document.getElementById('user-status').value;
+    const bannerUrl = document.getElementById('banner-image-url').value.replace(/[<>"']/g, function(match) {
+        return {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
+    const pfpUrl = document.getElementById('pfp-url').value.replace(/[<>"']/g, function(match) {
+        return {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
+    const color1 = document.getElementById('gradient-color-1').value.replace(/[&<>"']/g, function(match) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
+    const color2 = document.getElementById('gradient-color-2').value.replace(/[&<>"']/g, function(match) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
+    const status = document.getElementById('user-status').value.replace(/[&<>"']/g, function(match) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
 
     console.log('Updating profile preview with:', { bannerUrl, pfpUrl, color1, color2, status });
 
