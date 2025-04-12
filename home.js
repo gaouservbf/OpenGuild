@@ -14,13 +14,29 @@
 
                         data.categories.forEach(category => {
                             const categoryDiv = document.createElement('div');
-                            categoryDiv.innerHTML = `<center><strong>${category.name}</strong></center>`;
+                            categoryDiv.innerHTML = `<center><strong>${(category.name).replace(/[&<>"']/g, function(match) {
+                                return {
+                                    '&': '&amp;',
+                                    '<': '&lt;',
+                                    '>': '&gt;',
+                                    '"': '&quot;',
+                                    "'": '&#39;'
+                                }[match];
+                            })}</strong></center>`;
                             channelsList.appendChild(categoryDiv);
 
                             category.channels.forEach(channel => {
                                 const channelItem = document.createElement('div');
                                 channelItem.className = 'channel-item';
-                                channelItem.innerHTML = `# ${channel.name}`;
+                                channelItem.innerHTML = `# ${(channel.name).replace(/[&<>"']/g, function(match) {
+                                    return {
+                                        '&': '&amp;',
+                                        '<': '&lt;',
+                                        '>': '&gt;',
+                                        '"': '&quot;',
+                                        "'": '&#39;'
+                                    }[match];
+                                })}`;
                                 channelItem.addEventListener('click', () => {
                                     currentChannelId = channel.id;
                                     fetchMessages();
