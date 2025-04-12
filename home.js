@@ -1,37 +1,15 @@
 // Current guild ID and channel ID
         let currentChannelId = null;
+function htmlEncode(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '<')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
-        // Function to fetch channels for the current guild
-        function fetchChannels() {
-            if (!currentGuildId) return;
-
-            fetch(`api/v1/get_channels.php?guild_id=${currentGuildId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        const channelsList = document.getElementById('channels-list');
-                        channelsList.innerHTML = '';
-
-                        data.categories.forEach(category => {
-                            const categoryDiv = document.createElement('div');
-                            categoryDiv.innerHTML = `<center><strong>${category.name}</strong></center>`;
-                            channelsList.appendChild(categoryDiv);
-
-                            category.channels.forEach(channel => {
-                                const channelItem = document.createElement('div');
-                                channelItem.className = 'channel-item';
-                                channelItem.innerHTML = `# ${channel.name}`;
-                                channelItem.addEventListener('click', () => {
-                                    currentChannelId = channel.id;
-                                    fetchMessages();
-                                });
-                                channelsList.appendChild(channelItem);
-                            });
-                        });
-                    }
-                })
-                .catch(error => console.error('Error fetching channels:', error));
-        }
 
                               let profilePictureCache = {}; // Global cache for profile pictures
 // Function to fetch messages for the current channel
@@ -118,7 +96,7 @@ function fetchMessages() {
                     messageDiv.innerHTML = `
                         <div class="message-header">
                             <img src="${pfpUrl}" alt="${msg.username}" class="message-pfp" width=40 height=40>
-                            <strong>${msg.username}</strong>
+                            <strong>${htmlEncode(msg.username)}</strong>
                             <span class="timestamp">${formattedTime}</span>
                         </div>
                         <div class="message-content">${linkifiedContent}</div>
@@ -216,7 +194,7 @@ function sendMessage() {
     if (message !== '') {
         const formData = new FormData();
         formData.append('channel_id', currentChannelId);
-        formData.append('message', message);
+        formData.append('message', htmlEncode(message));
 
         fetch('api/v1/send_message.php', {
             method: 'POST',
@@ -540,7 +518,7 @@ function fetchChannels() {
                     const categoryDiv = document.createElement('div');
           
 categoryDiv.classList.add('container');
-                    categoryDiv.innerHTML = `<strong>${category.name}</strong>`;
+                    categoryDiv.innerHTML = `<strong>${htmlEncode(category.name)}</strong>`;
                     categoryDiv.dataset.categoryId = category.id;
                     categoryDiv.style.cursor = 'pointer';
                     
@@ -554,7 +532,7 @@ categoryDiv.classList.add('container');
                     category.channels.forEach(channel => {
                         const channelItem = document.createElement('div');
                         channelItem.className = 'channel-item';
-                        channelItem.innerHTML = `# ${channel.name}`;
+                        channelItem.innerHTML = `# ${htmlEncode(channel.name)}`;
                         channelItem.addEventListener('click', () => {
                             currentChannelId = channel.id;
                             fetchMessages();
@@ -945,7 +923,7 @@ function fetchMembers() {
 
                             // Member username
                             const usernameSpan = document.createElement('span');
-                            usernameSpan.textContent = member.username;
+                            usernameSpan.textContent = htmlEncode(member.username);
                             usernameSpan.style.color = '#ffffff';
 
                             // Owner badge (if applicable)
@@ -993,7 +971,7 @@ function showUserProfileCard(userId, username) {
     // Create loading indicator
     modal.innerHTML = `
         <div class="modal-content" style="width: 320px;">
-            <h3>Loading ${username}'s profile...</h3>
+            <h3>Loading ${htmlEncode(username)}'s profile...</h3>
             <div class="loading-spinner"></div>
             <button class="close-profile-btn">Close</button>
         </div>
@@ -1029,19 +1007,19 @@ function showUserProfileCard(userId, username) {
                                     <!-- Banner Image (if available) -->
                                     ${data.banner_image ?
                                         `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-                                            background-image: url('${data.banner_image}'); background-size: cover; background-position: center;">
+                                            background-image: url('${htmlEncode(data.banner_image)}'); background-size: cover; background-position: center;">
                                         </div>` : ''}
                                     
                                     <!-- Profile Picture -->
                                     <div style="position: absolute; z-index: 2000; top: 40px; left: 20px; width: 84px; height: 84px;
                                           ">
-                                        <img src="${data.pfp || 'default-avatar.png'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #1e1e1e;">
+                                        <img src="${htmlEncode(data.pfp || 'default-avatar.png')}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #1e1e1e;">
                                         <div class="status-indicator status-${userStatus}" style="z-index:10000";></div>
                                     </div>
                                     
                                     <!-- Username -->
                                     <div style="position: absolute; top: 140px; left: 20px; color: white; font-weight: bold; font-size: 18px;">
-                                        ${username}
+                                        ${htmlEncode(username)}
                                     </div>
                                 </div>
                                 <div style="padding: 20px; background-color: #2a2a2a;">

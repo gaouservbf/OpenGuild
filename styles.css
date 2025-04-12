@@ -1,4 +1,8 @@
- body {
+   .scrollable-container {
+        overflow-y: auto;
+        height: 100%;
+    } 
+body {
             font-family: Roboto, sans-serif;
             margin: 0;
             padding: 0;

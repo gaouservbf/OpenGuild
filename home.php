@@ -102,7 +102,7 @@ $conn->close();
                           <table width=100% cellspacing=0 cellpadding=12 height=100% bgcolor=#1e1e1e>
                             <tr>
                               <td valign=middle>
-                            <div id="channels-list" style="width: 200px; height: 100%;  background-color: #1e1e1e;">
+                            <div id="channels-list" style="width: 200px; height: 100%;  background-color: #1e1e1e;" class="scrollable-container">
                                 <!-- Channels will be loaded here -->
                             </div>
                                 </td>
@@ -110,7 +110,7 @@ $conn->close();
                             </table>
                         </td>
                         <td width=100% height=100%>
-                            <div id="message-container" style="height: 100%; min-width: 100%;" class="message-container">
+                            <div id="message-container" style="height: 100%; min-width: 100%;" class="message-container" class="scrollable-container">
                                 <!-- Messages will be loaded here -->
                             </div>
                         </td>
