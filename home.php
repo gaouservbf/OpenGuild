@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 // gaouser dont make the mistake again
-require 'db_connection.php';
+require 'api/v1/db_connection.php';
 
 // Get user's guilds
 $userId = $_SESSION['user_id'];
