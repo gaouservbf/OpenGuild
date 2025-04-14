@@ -1,4 +1,4 @@
-# <p style="align: center">OpenGuild</p>
+# <p align="center">OpenGuild</p>
 OpenGuild is an open-source, guild/hub/server based messaging and communication service designed to replace Discord.
 
 <table>
