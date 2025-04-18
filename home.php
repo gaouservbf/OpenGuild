@@ -24,6 +24,24 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+// Get user's direct message channels
+$stmt = $conn->prepare("SELECT dmc.channel_id, u.username AS user1_name, u2.username AS user2_name 
+                        FROM direct_message_channels dmc
+                        JOIN users u ON dmc.user1_id = u.id
+                        JOIN users u2 ON dmc.user2_id = u2.id
+                        WHERE dmc.user1_id = ? OR dmc.user2_id = ?");
+$stmt->bind_param("ii", $userId, $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+$dms = [];
+while ($row = $result->fetch_assoc()) {
+    $dms[] = [
+        "channel_id" => $row['channel_id'],
+        "name" => ($row['user1_name'] === $_SESSION['username']) ? $row['user2_name'] : $row['user1_name']
+    ];
+}
+$stmt->close();
+
 // Get current guild info if specified
 $currentGuildId = isset($_GET['guild_id']) ? (int)$_GET['guild_id'] : (count($guilds) > 0 ? $guilds[0]['id'] : null);
 $currentGuildName = "";
@@ -246,7 +264,27 @@ $conn->close();
     </ul>
 </div>
 
-  
+<!-- Add DM section -->
+<div id="dm-list" style="width: 200px; height: 100%; background-color: #1e1e1e; padding: 10px;">
+    <h4 style="color: rgba(8,156,68,1); margin-bottom: 10px;">Direct Messages</h4>
+    <?php foreach ($dms as $dm): ?>
+        <div class="dm-item" data-channel-id="<?php echo $dm['channel_id']; ?>" style="cursor: pointer; margin-bottom: 10px;">
+            <?php echo htmlspecialchars($dm['name']); ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<script>
+    // Add event listeners for DM items
+    document.querySelectorAll('.dm-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const channelId = this.getAttribute('data-channel-id');
+            currentChannelId = channelId;
+            fetchMessages();
+        });
+    });
+</script>
+
     <script src="home.js">
 
 

@@ -29,7 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)");
         $stmt->bind_param("ii", $senderId, $receiverId);
         if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Friend request accepted']);
+            // Create a DM channel for the new friends
+            $stmt = $conn->prepare("INSERT INTO direct_message_channels (user1_id, user2_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $senderId, $receiverId);
+            if ($stmt->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'Friend request accepted and DM channel created']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to create DM channel']);
+            }
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to create friendship']);
         }

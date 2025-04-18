@@ -35,6 +35,27 @@ if (empty($channelId)) {
     exit();
 }
 
+// Check if the channel is a direct message channel and restrict access
+$stmt = $conn->prepare("SELECT user1_id, user2_id FROM direct_message_channels WHERE channel_id = ?");
+$stmt->bind_param("i", $channelId);
+$stmt->execute();
+$stmt->store_result();
+$stmt->bind_result($user1Id, $user2Id);
+
+if ($stmt->num_rows > 0) {
+    $stmt->fetch();
+    if ($_SESSION['user_id'] !== $user1Id && $_SESSION['user_id'] !== $user2Id) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "You are not authorized to view messages in this channel"
+        ]);
+        $stmt->close();
+        $conn->close();
+        exit();
+    }
+}
+$stmt->close();
+
 // Check if user is a member of the guild
 $stmt = $conn->prepare("SELECT 1 FROM channels ch
                        JOIN categories cat ON ch.category_id = cat.id
