@@ -85,6 +85,8 @@ function fetchMessages() {
                     // Format timestamp
                     const timestamp = new Date(msg.timestamp);
                     const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const formattedDate = timestamp.toLocaleDateString(); // adds date in MM/DD/YYYY (or local format)
+                    const formattedDateTime = `${formattedDate} ${formattedTime}`;
 
                     // Convert URLs to clickable links
                     const linkifiedContent = linkifyText(msg.content);
@@ -1097,7 +1099,7 @@ function showUserProfileCard(userId, username) {
             
             // Re-add event listener to close button
             modal.querySelector('.close-profile-btn').addEventListener('click', () => {
-                document.body.removeChild(modal);
+                document.body.removeChild(modal);                
             });
         });
 }
@@ -1177,7 +1179,7 @@ document.addEventListener('DOMContentLoaded', initializePage);
                     alert('Status updated successfully!');
                 } else {
                     console.error('Error updating status:', data.message);
-                    alert('Error updating status: ' + data.message);
+                    alert('Error updating status: ' + data.message);q        
                 }
             })
             .catch(error => {
