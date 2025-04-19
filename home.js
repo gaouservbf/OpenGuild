@@ -1179,7 +1179,7 @@ document.addEventListener('DOMContentLoaded', initializePage);
                     alert('Status updated successfully!');
                 } else {
                     console.error('Error updating status:', data.message);
-                    alert('Error updating status: ' + data.message);q        
+                    alert('Error updating status: ' + data.message);        
                 }
             })
             .catch(error => {
